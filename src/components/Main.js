@@ -16,6 +16,38 @@ function getImageURL(imageDatasArr) {
 }
 imageDatas = getImageURL(imageDatas);
 
+//控制组件
+class ControllerUnit extends React.Component{
+  constructor(props){
+    super(props);
+    this.handleClick = this.handleClick.bind(this);
+  }
+  handleClick(e){
+    //如果点击的是当前正在选中态的按钮，则翻转图片，否则将对应的图片居中
+    if(this.props.arrange.isCenter){
+      this.props.inverse();
+    }else{
+      this.props.center();
+    }
+    e.preventDefault();
+    e.stopPropagation();
+  }
+  render() {
+    let controlelrUnitClassName = 'controller-unit';
+    //如果对应的是居中的图片，显示控制按钮的居中态
+    if(this.props.arrange.isCenter){
+      controlelrUnitClassName += ' is-center';
+
+      //如果同时对应的是翻转图片，显示控制按钮的翻转态
+      if(this.props.arrange.isInverse){
+        controlelrUnitClassName += ' is-inverse';
+      }
+    }
+    return (
+      <span className={controlelrUnitClassName} onClick={this.handleClick}></span>
+    )
+  }
+}
 
 class ImgFigure extends React.Component{
   constructor(props){
@@ -51,7 +83,7 @@ class ImgFigure extends React.Component{
       styleObj.zIndex = 11;
     }
 
-    let imgFigureClassName = "img-figure";
+    let imgFigureClassName = 'img-figure';
     imgFigureClassName += this.props.arrange.isInverse ? ' is-inverse': '';
 
     return (
@@ -218,7 +250,7 @@ class AppComponent extends React.Component {
       imgsArrangeTopArr[i] = {
           pos : {
             top: this.getRangeRandom(vPosRangeTopY[0], vPosRangeTopY[1]),
-            left: this.getRangeRandom(vPosRangeX[0], vPosRangeX[1]),
+            left: this.getRangeRandom(vPosRangeX[0], vPosRangeX[1])
           },rotate:this.get30DegRandom(),
           isCenter:false
         }
@@ -289,7 +321,14 @@ class AppComponent extends React.Component {
           arrange={this.imgsArrangeArr[i]}
           key={i}
           data={value}
-          ref={"imgFigures"+i}
+          ref={'imgFigures'+i}
+          inverse={this.inverse(i)}
+          center={this.center(i)}
+        />);
+      controllerUnits.push(
+        <ControllerUnit
+          key={i}
+          arrange={this.imgsArrangeArr[i]}
           inverse={this.inverse(i)}
           center={this.center(i)}
         />);
